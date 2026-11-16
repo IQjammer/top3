@@ -27,6 +27,7 @@ pub struct Proc {
     pub pid: u32,
     pub mem: u64,
     pub uid: u32,
+    pub user: String,
 }
 
 impl Proc {
@@ -86,12 +87,14 @@ impl Proc {
                 let mem = mem.unwrap_or_default();
                 let name = name.take().unwrap();
                 let uid = uid.unwrap();
+                let user = load_users().get(&uid).cloned().unwrap_or_else(|| uid.to_string());
 
                 procs.push(Proc {
                     pid,
                     name,
                     mem,
                     uid,
+                    user,
                 });
         }
         Ok(procs)
