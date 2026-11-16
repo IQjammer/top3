@@ -7,7 +7,6 @@ use app::App;
 use std::io;
 
 fn main() -> io::Result<()> {
-    println!("{:?}", processes::Proc::read_proc());
     let mut terminal = ratatui::init();
 
     let mut app = App::new();
