@@ -84,8 +84,8 @@ impl App {
     fn update(&mut self, action: Action) {
         match action {
             Action::Quit => self.exit = true,
-            Action::Up => todo!(),
-            Action::Down => todo!(),
+            Action::Up => self.table_state.select_previous(),
+            Action::Down => self.table_state.select_next(),
             Action::Tick | Action::None => {}
         }
     }
