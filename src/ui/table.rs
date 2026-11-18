@@ -30,6 +30,7 @@ pub fn render_table(app: &mut App, area: Rect, frame: &mut Frame) {
     let table = Table::new(rows, width)
         .header(header)
         .column_spacing(2)
+        .row_highlight_style(Style::new().add_modifier(Modifier::REVERSED))
         .block(Block::bordered().title(" Processes "));
 
     frame.render_stateful_widget(table, area, &mut app.table_state);
