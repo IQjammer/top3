@@ -22,7 +22,8 @@ pub struct App {
 
 impl App {
     pub fn new() -> Self {
-        let procs = processes::Proc::read_proc().unwrap();
+        let mut procs = processes::Proc::read_proc().unwrap();
+        procs.sort_unstable_by_key(|p| std::cmp::Reverse(p.mem));
         let mut table_state = TableState::default();
         table_state.select(Some(0));
         Self {
@@ -45,6 +46,8 @@ impl App {
 
             if self.last_refresh.elapsed() >= REFRESH {
                 self.procs = Proc::read_proc().unwrap_or_default();
+                self.procs
+                    .sort_unstable_by_key(|p| std::cmp::Reverse(p.mem));
                 self.last_refresh = Instant::now()
             }
         }
