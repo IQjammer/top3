@@ -86,7 +86,7 @@ impl App {
             Action::Quit => self.exit = true,
             Action::Up => self.table_state.select_previous(),
             Action::Down => self.table_state.select_next(),
-            Action::Tick | Action::None => {}
+            Action::Tick => {}
         }
     }
 }

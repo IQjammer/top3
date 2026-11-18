@@ -3,5 +3,4 @@ pub enum Action {
     Up,
     Down,
     Tick,
-    None,
 }
