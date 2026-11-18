@@ -22,11 +22,27 @@ fn load_users() -> HashMap<u32, String> {
 pub struct Proc {
     pub name: String,
     pub pid: u32,
-    pub mem: u64,
+    pub mem: (u64, String),
     pub user: String,
 }
 
 impl Proc {
+    pub fn convert(procs: Vec<Proc>) -> Vec<Proc> {
+        procs
+            .into_iter()
+            .map(|mut p| {
+                if p.mem.0 > 1024 * 1024 {
+                    p.mem.0 = p.mem.0 / 1024 * 1024;
+                    p.mem.1 = "gB".to_string();
+                } else if p.mem.0 > 1024 {
+                    p.mem.0 = p.mem.0 / 1024;
+                    p.mem.1 = "mB".to_string();
+                }
+                p
+            })
+            .collect()
+    }
+
     pub fn read_proc() -> Result<Vec<Proc>, io::Error> {
         let mut procs = Vec::new();
         for entry in read_dir("/proc/")? {
@@ -81,7 +97,7 @@ impl Proc {
                 }
             }
 
-            let mem = mem.unwrap_or_default();
+            let mem = (mem.unwrap_or_default(), "kB".to_string());
             let name = name.take().unwrap();
             let uid = uid.unwrap();
             let user = load_users()
@@ -96,6 +112,8 @@ impl Proc {
                 user,
             });
         }
+        procs.sort_unstable_by_key(|p| std::cmp::Reverse(p.mem.0));
+        procs = Proc::convert(procs);
         Ok(procs)
     }
 }

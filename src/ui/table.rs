@@ -15,7 +15,7 @@ pub fn render_table(app: &mut App, area: Rect, frame: &mut Frame) {
         Row::new([
             p.name.to_string(),
             p.pid.to_string(),
-            p.mem.to_string(),
+            format!("{} {}", p.mem.0, p.mem.1),
             p.user.to_string(),
         ])
     });
