@@ -1,4 +1,3 @@
-pub mod header;
 pub mod table;
 use crate::App;
 use ratatui::Frame;
