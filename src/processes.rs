@@ -32,10 +32,10 @@ impl Proc {
             .into_iter()
             .map(|mut p| {
                 if p.mem.0 > 1024 * 1024 {
-                    p.mem.0 = p.mem.0 / 1024 * 1024;
+                    p.mem.0 /= 1024 * 1024;
                     p.mem.1 = "gB".to_string();
                 } else if p.mem.0 > 1024 {
-                    p.mem.0 = p.mem.0 / 1024;
+                    p.mem.0 /= 1024;
                     p.mem.1 = "mB".to_string();
                 }
                 p
