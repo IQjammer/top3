@@ -9,7 +9,7 @@ use crate::App;
 
 pub fn render_table(app: &mut App, area: Rect, frame: &mut Frame) {
     let header =
-        Row::new(["PID", "NAME", "MEM", "USER"]).style(Style::new().add_modifier(Modifier::BOLD));
+        Row::new(["NAME", "PID", "MEM", "USER"]).style(Style::new().add_modifier(Modifier::BOLD));
 
     let rows = app.procs.iter().map(|p| {
         Row::new([

@@ -1,4 +1,7 @@
-use std::{io, time::Duration};
+use std::{
+    io,
+    time::{Duration, Instant},
+};
 
 use crate::{
     action::Action,
@@ -8,10 +11,13 @@ use crate::{
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{DefaultTerminal, Frame, widgets::TableState};
 
+const REFRESH: Duration = Duration::from_millis(300);
+
 pub struct App {
     pub exit: bool,
     pub procs: Vec<Proc>,
     pub table_state: TableState,
+    pub last_refresh: Instant,
 }
 
 impl App {
@@ -23,13 +29,24 @@ impl App {
             exit: false,
             procs,
             table_state,
+            last_refresh: Instant::now(),
         }
     }
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         while !self.exit {
             terminal.draw(|frame| self.draw(frame))?;
-            self.handle_events()?;
+
+            let timeout = REFRESH.saturating_sub(self.last_refresh.elapsed());
+
+            if event::poll(timeout)? {
+                self.handle_events()?;
+            }
+
+            if self.last_refresh.elapsed() >= REFRESH {
+                self.procs = Proc::read_proc().unwrap_or_default();
+                self.last_refresh = Instant::now()
+            }
         }
         Ok(())
     }
