@@ -1,16 +1,29 @@
 use std::{io, time::Duration};
 
-use crate::{action::Action, ui};
+use crate::{
+    action::Action,
+    processes::{self, Proc},
+    ui,
+};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
-use ratatui::{DefaultTerminal, Frame};
+use ratatui::{DefaultTerminal, Frame, widgets::TableState};
 
 pub struct App {
-    exit: bool,
+    pub exit: bool,
+    pub procs: Vec<Proc>,
+    pub table_state: TableState,
 }
 
 impl App {
     pub fn new() -> Self {
-        Self { exit: false }
+        let procs = processes::Proc::read_proc().unwrap();
+        let mut table_state = TableState::default();
+        table_state.select(Some(0));
+        Self {
+            exit: false,
+            procs,
+            table_state,
+        }
     }
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
@@ -22,7 +35,7 @@ impl App {
     }
 
     fn draw(&mut self, frame: &mut Frame) {
-        ui::render(self, frame.area(), frame.buffer_mut());
+        ui::render(self, frame);
     }
 
     fn handle_events(&mut self) -> io::Result<()> {

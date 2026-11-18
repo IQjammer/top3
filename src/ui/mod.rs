@@ -1,7 +1,9 @@
 pub mod header;
+pub mod table;
 use crate::App;
-use ratatui::{buffer::Buffer, layout::Rect};
+use ratatui::Frame;
 
-pub fn render(app: &App, area: Rect, buf: &mut Buffer) {
-    header::render_header(app, area, buf)
+pub fn render(mut app: &mut App, frame: &mut Frame) {
+    let area = frame.area();
+    table::render_table(&mut app, area, frame);
 }
